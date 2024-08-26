@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="homework.backend.mapper.VueUserMapper">
+
+    <!-- 查询所有用户 -->
+    <select id="findAllVueUsers" resultType="homework.backend.model.VueUser">
+        SELECT * FROM vue_users;
+    </select>
+
+    <!-- 通过ID查询用户 -->
+    <select id="findVueUserById" parameterType="Long" resultType="homework.backend.model.VueUser">
+        SELECT * FROM vue_users WHERE id = #{id};
+    </select>
+
+    <!-- 分页查询用户 -->
+<!--    <select id="findUsersByPageAndFilters" resultType="homework.backend.model.VueUser">-->
+<!--        SELECT *-->
+<!--        FROM vue_users-->
+<!--        WHERE user_name LIKE CONCAT('%', #{username}, '%')-->
+<!--            LIMIT #{offset}, #{pageSize};-->
+<!--    </select>-->
+<!--    <select id="findUsersByPageAndFilters" resultType="homework.backend.model.VueUser">-->
+<!--        SELECT *-->
+<!--        FROM vue_users-->
+<!--        WHERE user_name LIKE CONCAT('%', #{username}, '%')-->
+<!--        ORDER BY create_time DESC-->
+<!--            LIMIT #{offset}, #{pageSize};-->
+<!--    </select>-->
+<!--    <select id="findUsersByPageAndFilters" resultType="homework.backend.model.VueUser">-->
+<!--        SELECT *-->
+<!--        FROM vue_users-->
+<!--        WHERE user_name LIKE CONCAT('%', #{username}, '%')-->
+<!--        ORDER BY create_time DESC-->
+<!--            LIMIT #{offset}, #{pageSize};-->
+<!--    </select>-->
+
+    <select id="findUsersByPageAndFilters" resultType="homework.backend.model.VueUser">
+        SELECT *
+        FROM vue_users
+        WHERE user_name LIKE CONCAT('%', #{username}, '%')
+        <if test="startDate != null and endDate != null">
+            AND create_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+        ORDER BY create_time DESC
+        LIMIT #{offset}, #{pageSize};
+    </select>
+
+    <select id="countUsersByFilters" resultType="int">
+        SELECT COUNT(*)
+        FROM vue_users
+        WHERE user_name LIKE CONCAT('%', #{username}, '%')
+        <if test="startDate != null and endDate != null">
+            AND create_time BETWEEN #{startDate} AND #{endDate}
+        </if>
+    </select>
+
+
+
+<!--    &lt;!&ndash; 统计符合条件的用户数量 &ndash;&gt;-->
+<!--    <select id="countUsersByFilters" resultType="int">-->
+<!--        SELECT COUNT(*)-->
+<!--        FROM vue_users-->
+<!--        WHERE user_name LIKE CONCAT('%', #{username}, '%');-->
+<!--    </select>-->
+
+    <!-- 插入新用户 -->
+    <insert id="insertVueUser" parameterType="homework.backend.model.VueUser">
+        INSERT INTO vue_users (user_name, true_name, password, email, gender, address, description, phone, role_list, status)
+        VALUES (#{userName}, #{trueName}, #{password}, #{email}, #{gender}, #{address}, #{description}, #{phone}, #{roleList}, #{status});
+    </insert>
+
+    <!-- 更新用户 -->
+    <update id="updateVueUser" parameterType="homework.backend.model.VueUser">
+        UPDATE vue_users
+        SET user_name = #{userName},
+            true_name = #{trueName},
+            password = #{password},
+            email = #{email},
+            gender = #{gender},
+            address = #{address},
+            description = #{description},
+            phone = #{phone},
+            role_list = #{roleList},
+            status = #{status}
+        WHERE id = #{id};
+    </update>
+
+    <!-- 删除用户 -->
+    <delete id="deleteVueUser" parameterType="Long">
+        DELETE FROM vue_users WHERE id = #{id};
+    </delete>
+
+</mapper>
